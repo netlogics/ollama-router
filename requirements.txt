@@ -1,0 +1,6 @@
+# Ollama for inference
+ollama
+
+# CLI and utilities
+rich
+python-dotenv
