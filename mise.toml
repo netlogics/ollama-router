@@ -1,0 +1,9 @@
+[tools]
+python = "latest"
+uv = "latest"
+
+[env]
+OLLAMA_HOST="localhost:11434"
+OLLAMA_URL="http://localhost:11434"
+OLLAMA_CONTEXT_WINDOW="64000"
+OLLAMA_QUANTIZATION="Q4_K_M"
