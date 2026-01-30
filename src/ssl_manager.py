@@ -4,7 +4,8 @@ Handles self-signed certificate generation and management.
 """
 
 import os
-from datetime import datetime, timedelta
+import ipaddress
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from cryptography import x509
 from cryptography.x509.oid import NameOID
@@ -53,7 +54,7 @@ class SSLManager:
                 cert = x509.load_pem_x509_certificate(f.read())
 
             # Check if expired
-            if cert.not_valid_after_utc < datetime.utcnow():
+            if cert.not_valid_after_utc < datetime.now(timezone.utc):
                 return False
 
             return True
@@ -89,16 +90,16 @@ class SSLManager:
             .issuer_name(issuer)
             .public_key(key.public_key())
             .serial_number(x509.random_serial_number())
-            .not_valid_before(datetime.utcnow())
+            .not_valid_before(datetime.now(timezone.utc))
             .not_valid_after(
-                datetime.utcnow() + timedelta(days=self.config.validity_days)
+                datetime.now(timezone.utc) + timedelta(days=self.config.validity_days)
             )
             .add_extension(
                 x509.SubjectAlternativeName(
                     [
                         x509.DNSName("localhost"),
-                        x509.IPAddress("127.0.0.1"),
-                        x509.IPAddress("0.0.0.0"),
+                        x509.IPAddress(ipaddress.IPv4Address("127.0.0.1")),
+                        x509.IPAddress(ipaddress.IPv4Address("0.0.0.0")),
                     ]
                 ),
                 critical=False,
